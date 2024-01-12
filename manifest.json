@@ -1,10 +1,10 @@
 {
-  "name": "TOC Medium",
-  "version": "0.7",
-  "description": "Table Of Contents generator for Medium stories",
+  "name": "ET-TOC Medium",
+  "version": "1.0",
+  "description": "My Fork From https://github.com/vdeantoni/toc-medium = Table Of Contents generator for Medium stories",
   "manifest_version": 3,
   "author": "Vinicius De Antoni",
-  "short_name": "toc-medium",
+  "short_name": "et-toc-medium",
   "permissions": [],
   "background": {
     "service_worker": "service_worker.js",

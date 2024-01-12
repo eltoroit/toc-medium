@@ -11,39 +11,58 @@
   const generate = () => {
     const headingList = [...document.querySelectorAll("h3[name], h4[name]")];
 
-    return headingList
-      .filter(
-        (headingTag) =>
-          !headingTag.classList.contains("graf--title") &&
-          !headingTag.classList.contains("graf--subtitle"),
-      )
-      .map((headingTag) => {
-        let bullet;
-        switch (headingTag.tagName.toLowerCase()) {
-          case "h1":
-          case "h2":
-          case "h3":
-            bullet = `·`;
-            break;
-          case "h4":
-            bullet = `  ∘`;
-            break;
-        }
+    // Original filter
+    let var1 = headingList.filter(
+      (headingTag) =>
+        !headingTag.classList.contains("graf--title") &&
+        !headingTag.classList.contains("graf--subtitle")
+    );
 
-        return `${bullet} <a href="#${headingTag.getAttribute(
-          "name",
-        )}" title="${headingTag.textContent}">${headingTag.textContent}</a>`;
-      });
+    // Exclude Table Of Contents
+    let var2 = var1.filter(
+      (headingTag) => headingTag.textContent !== "Table Of\xa0Contents" // (\xa0 => &nbsp;)
+    );
+
+    let longDash = {
+      js: "\u2014",
+      html: "&mdash;",
+    };
+
+    let var3 = var2.map((headingTag) => {
+      let bullet;
+      let text = headingTag.textContent;
+      let name = headingTag.getAttribute("name");
+
+      switch (headingTag.tagName.toLowerCase()) {
+        case "h1":
+        case "h2":
+        case "h3":
+          bullet = "";
+          break;
+        case "h4":
+          bullet = "";
+          while (text[0] === longDash.js) {
+            bullet += longDash.html;
+            text = text.substring(1);
+          }
+          bullet = `&mdash;${bullet} `;
+          break;
+      }
+
+      return `${bullet}<a href="#${name}" title="${text}">${text}</a>`;
+    });
+
+    return var3;
   };
 
   const inject = () => {
     const tooltipToggleMenu = document.querySelector(
-      "[data-action=inline-menu]",
+      "[data-action=inline-menu]"
     );
     const tooltip = document.querySelector(".inlineTooltip");
     const tooltipMenu = document.querySelector(".inlineTooltip-menu");
     const addEmbedButton = document.querySelector(
-      ".inlineTooltip-menu [title='Add an embed']",
+      ".inlineTooltip-menu [title='Add an embed']"
     );
 
     if (!tooltip || !tooltipToggleMenu || !tooltipMenu || !addEmbedButton) {
@@ -76,7 +95,7 @@
     addToCButton.setAttribute("data-action", "inline-menu-toc");
     addToCButton.setAttribute(
       "data-action-value",
-      "Generate a table of contents",
+      "Generate a table of contents"
     );
     addToCButton.setAttribute("data-default-value", "Table of contents");
     addToCButton.innerHTML = "⋮";
